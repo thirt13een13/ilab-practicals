@@ -1,17 +1,16 @@
 const express = require('express');
-const Docker = require('dockerode');
+const { exec } = require('child_process');
 const cors = require('cors');
 
 const app = express();
-const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ status: 'ok' });
 });
 
 // Start experiment container
@@ -20,145 +19,117 @@ app.post('/api/start-experiment', async (req, res) => {
     
     console.log(`Starting experiment: ${image} on port ${port}`);
     
-    try {
-        // Check if container already exists
-        const containers = await docker.listContainers({ all: true });
-        const existingContainer = containers.find(c => 
-            c.Names.includes(`/experiment-${port}`) || 
-            c.Ports.some(p => p.PublicPort === port)
-        );
-
-        if (existingContainer) {
-            console.log('Container already exists, starting it...');
-            const container = docker.getContainer(existingContainer.Id);
-            const state = await container.inspect();
-            
-            if (!state.State.Running) {
-                await container.start();
-                console.log('Container started successfully');
-            } else {
-                console.log('Container is already running');
-            }
-            
+    // Check if container is already running on this port
+    exec(`docker ps --filter "publish=${port}" --format "{{.Names}}"`, (error, stdout) => {
+        if (stdout.trim()) {
+            console.log(`Container already running on port ${port}: ${stdout.trim()}`);
             return res.json({ 
                 success: true,
-                message: 'Container started', 
+                message: 'Container already running', 
                 port,
                 url: `http://localhost:${port}`
             });
         }
-
-        // Create and start new container
-        console.log('Creating new container...');
-        const container = await docker.createContainer({
-            Image: image,
-            name: `experiment-${port}`,
-            ExposedPorts: { 
-                [`${port}/tcp`]: {} 
-            },
-            HostConfig: {
-                PortBindings: {
-                    [`${port}/tcp`]: [{ 
-                        HostPort: port.toString() 
-                    }]
-                },
-                RestartPolicy: {
-                    Name: 'unless-stopped'
-                }
+        
+        // Try to start container with this image
+        const containerName = `experiment-${port}`;
+        
+        // First check if container exists but is stopped
+        exec(`docker ps -a --filter "name=${containerName}" --format "{{.Names}}"`, (err, existingContainer) => {
+            if (existingContainer.trim()) {
+                // Container exists, start it
+                exec(`docker start ${containerName}`, (startErr) => {
+                    if (startErr) {
+                        console.error('Error starting container:', startErr);
+                        return res.status(500).json({ 
+                            success: false,
+                            error: `Failed to start container: ${startErr.message}` 
+                        });
+                    }
+                    console.log(`Started existing container: ${containerName}`);
+                    res.json({ 
+                        success: true,
+                        message: 'Container started', 
+                        port,
+                        url: `http://localhost:${port}`
+                    });
+                });
+            } else {
+                // Container doesn't exist, create new one
+                const cmd = `docker run -d -p ${port}:80 --name ${containerName} ${image}`;
+                console.log('Running:', cmd);
+                
+                exec(cmd, (runErr) => {
+                    if (runErr) {
+                        console.error('Error running container:', runErr);
+                        
+                        let errorMsg = runErr.message;
+                        if (runErr.message.includes('No such image')) {
+                            errorMsg = `Image '${image}' not found. Build it with: docker build -t ${image} .`;
+                        } else if (runErr.message.includes('port is already allocated')) {
+                            errorMsg = `Port ${port} is already in use.`;
+                        }
+                        
+                        return res.status(500).json({ 
+                            success: false,
+                            error: errorMsg
+                        });
+                    }
+                    
+                    console.log(`Created and started container: ${containerName}`);
+                    res.json({ 
+                        success: true,
+                        message: 'Container created and started', 
+                        port,
+                        url: `http://localhost:${port}`
+                    });
+                });
             }
         });
-
-        await container.start();
-        console.log('Container created and started successfully');
-        
-        // Wait for container to be ready
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        res.json({ 
-            success: true,
-            message: 'Container created and started', 
-            port,
-            url: `http://localhost:${port}`
-        });
-    } catch (error) {
-        console.error('Docker error:', error);
-        
-        // Check if image exists
-        if (error.message.includes('No such image')) {
-            return res.status(404).json({ 
-                success: false,
-                error: `Image ${image} not found. Please build the image first.`,
-                details: error.message 
-            });
-        }
-        
-        res.status(500).json({ 
-            success: false,
-            error: error.message 
-        });
-    }
+    });
 });
 
 // Stop experiment container
 app.post('/api/stop-experiment', async (req, res) => {
     const { port } = req.body;
     
-    console.log(`Stopping experiment on port ${port}`);
-    
-    try {
-        const containers = await docker.listContainers({ all: true });
-        const container = containers.find(c => 
-            c.Names.includes(`/experiment-${port}`) || 
-            c.Ports.some(p => p.PublicPort === port)
-        );
-
-        if (container) {
-            const dockerContainer = docker.getContainer(container.Id);
-            await dockerContainer.stop();
-            console.log('Container stopped successfully');
-            res.json({ 
-                success: true,
-                message: 'Container stopped' 
+    exec(`docker ps --filter "publish=${port}" --format "{{.Names}}"`, (error, stdout) => {
+        if (stdout.trim()) {
+            const containerName = stdout.trim();
+            exec(`docker stop ${containerName}`, (stopErr) => {
+                if (stopErr) {
+                    return res.status(500).json({ success: false, error: stopErr.message });
+                }
+                res.json({ success: true, message: `Container ${containerName} stopped` });
             });
         } else {
-            res.status(404).json({ 
-                success: false,
-                error: 'Container not found' 
-            });
+            res.json({ success: true, message: 'No container found on this port' });
         }
-    } catch (error) {
-        console.error('Error stopping container:', error);
-        res.status(500).json({ 
-            success: false,
-            error: error.message 
-        });
-    }
+    });
 });
 
 // List running experiments
 app.get('/api/experiments', async (req, res) => {
-    try {
-        const containers = await docker.listContainers({
-            filters: {
-                name: ['experiment']
-            }
+    exec('docker ps --filter "name=experiment" --format "{{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"', (error, stdout) => {
+        if (error) {
+            return res.json({ success: true, experiments: [] });
+        }
+        
+        const experiments = stdout.trim().split('\n').filter(line => line).map(line => {
+            const parts = line.split('\t');
+            return {
+                name: parts[0],
+                image: parts[1],
+                ports: parts[2],
+                status: parts[3]
+            };
         });
         
-        const experiments = containers.map(c => ({
-            id: c.Id,
-            name: c.Names[0].replace('/', ''),
-            image: c.Image,
-            status: c.Status,
-            ports: c.Ports,
-            created: c.Created
-        }));
-        
         res.json({ success: true, experiments });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
+    });
 });
 
 app.listen(PORT, () => {
-    console.log(`Docker manager API running on http://localhost:${PORT}`);
+    console.log(`Docker Manager API running on http://localhost:${PORT}`);
+    console.log('Using shell commands to manage Docker containers');
 });

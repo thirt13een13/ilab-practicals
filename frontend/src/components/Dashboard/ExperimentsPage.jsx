@@ -68,12 +68,17 @@ export default function ExperimentsPage() {
     )
   }
 
+  const getLevelSlug = () => {
+    if (subjectSlug === 'integrated-science') return 'primary'
+    return 'o-level'
+  }
+
   return (
     <div className="h-full overflow-y-auto p-6">
       <div className="w-full">
         <div className="mb-6">
           <Link 
-            to={`/dashboard/level/${subject?.slug === 'integrated-science' ? 'primary' : 'o-level'}`}
+            to={`/dashboard/level/${getLevelSlug()}`}
             className="inline-flex items-center text-sm text-gray-600 hover:text-indigo-600"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
