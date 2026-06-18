@@ -1,0 +1,20 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+supabase/.branches/
+supabase/.temp/
+
+# Docker
+docker-manager/node_modules/
+
+# Experiment builds
+experiments/**/node_modules/
+experiments/**/dist/
+
+# Python virtual environments
+venv/
+.venv/
+env/

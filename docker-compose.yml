@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./ilab-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_SUPABASE_URL=http://supabase:54321
+      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    depends_on:
+      - supabase
+      - docker-manager
+
+  docker-manager:
+    build: ./docker-manager
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=development
+
+  supabase:
+    image: supabase/supabase-local:latest
+    ports:
+      - "54321:54321"
+      - "54322:54322"
+    volumes:
+      - ./supabase:/supabase
