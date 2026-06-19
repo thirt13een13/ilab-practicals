@@ -1,0 +1,44 @@
+/* ═══════════════════════════════════════════════════════
+   iLab Physics · Pendulum · workspace.css
+   Canvas overlay widgets and drag-over highlight
+   ═══════════════════════════════════════════════════════ */
+
+/* ── CANVAS OVERLAY WIDGETS ──────────────── */
+.canvas-overlay {
+  position: absolute;
+  pointer-events: none;
+}
+#overlay-status {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12,14,20,0.88);
+  border: 1px solid var(--border2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+
+/* ── WIND INDICATOR ──────────────────────── */
+#wind-indicator {
+  top: 14px;
+  right: 14px;
+  background: rgba(12,14,20,0.82);
+  border: 1px solid var(--border2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--teal);
+  backdrop-filter: blur(4px);
+  text-align: center;
+  min-width: 100px;
+}
+#wind-indicator .wind-val { font-size: 18px; font-weight: 700; }
+
+/* ── DRAG-OVER HIGHLIGHT ─────────────────── */
+.workspace-wrap.drag-over { box-shadow: inset 0 0 0 2px var(--amber); }

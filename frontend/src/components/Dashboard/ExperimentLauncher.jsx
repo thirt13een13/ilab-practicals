@@ -11,87 +11,15 @@ export default function ExperimentLauncher() {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   const allExperiments = {
-    'ohms-law': {
-      title: "Ohm's Law",
-      slug: 'ohms-law',
-      description: 'Verify the relationship between voltage, current, and resistance',
-      docker_image: 'ilab-physics-ohms-law',
+    'pendulum': {
+      title: 'Pendulum Bob',
+      slug: 'pendulum',
+      description: 'Study simple harmonic motion and determine the acceleration due to gravity',
+      docker_image: 'ilab-physics-pendulum',
       port: 3001,
       subject: 'Physics',
-      level: 'O-Level'
+      level: 'o-level',
     },
-    'pendulum-motion': {
-      title: 'Pendulum Motion',
-      slug: 'pendulum-motion',
-      description: 'Study simple harmonic motion and calculate gravity',
-      docker_image: 'ilab-physics-pendulum-motion',
-      port: 3002,
-      subject: 'Physics',
-      level: 'O-Level'
-    },
-    'circuit-analysis': {
-      title: 'Circuit Analysis',
-      slug: 'circuit-analysis',
-      description: 'Analyze series and parallel circuits',
-      docker_image: 'ilab-physics-circuit-analysis',
-      port: 3003,
-      subject: 'Physics',
-      level: 'O-Level'
-    },
-    'acid-base-titration': {
-      title: 'Acid-Base Titration',
-      slug: 'acid-base-titration',
-      description: 'Determine concentration through titration',
-      docker_image: 'ilab-chemistry-titration',
-      port: 3004,
-      subject: 'Chemistry',
-      level: 'O-Level'
-    },
-    'chemical-reactions': {
-      title: 'Chemical Reactions',
-      slug: 'chemical-reactions',
-      description: 'Observe and analyze different types of reactions',
-      docker_image: 'ilab-chemistry-reactions',
-      port: 3005,
-      subject: 'Chemistry',
-      level: 'O-Level'
-    },
-    'microscope-simulation': {
-      title: 'Microscope Simulation',
-      slug: 'microscope-simulation',
-      description: 'Virtual microscope for studying cells',
-      docker_image: 'ilab-biology-microscope',
-      port: 3006,
-      subject: 'Biology',
-      level: 'O-Level'
-    },
-    'cell-structure': {
-      title: 'Cell Structure',
-      slug: 'cell-structure',
-      description: 'Explore plant and animal cell structures',
-      docker_image: 'ilab-biology-cell-structure',
-      port: 3007,
-      subject: 'Biology',
-      level: 'O-Level'
-    },
-    'plant-growth': {
-      title: 'Plant Growth',
-      slug: 'plant-growth',
-      description: 'Study factors affecting plant growth',
-      docker_image: 'ilab-science-plant-growth',
-      port: 3008,
-      subject: 'Integrated Science',
-      level: 'Primary'
-    },
-    'water-cycle': {
-      title: 'Water Cycle',
-      slug: 'water-cycle',
-      description: 'Understand the water cycle process',
-      docker_image: 'ilab-science-water-cycle',
-      port: 3009,
-      subject: 'Integrated Science',
-      level: 'Primary'
-    }
   }
 
   useEffect(() => {
@@ -146,9 +74,11 @@ export default function ExperimentLauncher() {
       'Physics': 'physics',
       'Chemistry': 'chemistry',
       'Biology': 'biology',
-      'Integrated Science': 'integrated-science'
+      'Integrated Science': 'integrated-science',
     }
-    return `/dashboard/experiments/${subjectSlugMap[experiment.subject] || 'physics'}`
+    const subject = subjectSlugMap[experiment.subject] || 'physics'
+    const level = experiment.level || 'o-level'
+    return `/dashboard/experiments/${level}/${subject}`
   }
 
   if (loading) {
@@ -196,7 +126,6 @@ export default function ExperimentLauncher() {
           src={`http://localhost:${experiment?.port}`}
           className="flex-1 w-full border-0"
           title={experiment?.title}
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         />
       </div>
     )
@@ -231,7 +160,6 @@ export default function ExperimentLauncher() {
         src={`http://localhost:${experiment?.port}`}
         className="flex-1 w-full border-0"
         title={experiment?.title}
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
     </div>
   )

@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════
+   iLab Physics · Pendulum · base.css
+   Variables, reset, typography, buttons, common utils
+   ═══════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* palette */
+  --bg:          #0c0e14;
+  --surface:     #13161f;
+  --surface2:    #1a1e2b;
+  --surface3:    #1f2435;
+  --border:      #252b3b;
+  --border2:     #2e3650;
+
+  --amber:       #f59e0b;
+  --amber-dim:   #92610a;
+  --amber-glow:  rgba(245,158,11,0.18);
+  --teal:        #2dd4bf;
+  --teal-dim:    #134e4a;
+  --green:       #4ade80;
+  --green-dim:   #14532d;
+  --red:         #f87171;
+  --red-dim:     #7f1d1d;
+  --blue:        #60a5fa;
+  --purple:      #a78bfa;
+
+  --text:        #dde3ef;
+  --text-dim:    #64748b;
+  --text-muted:  #3d4a5f;
+
+  /* structure */
+  --panel-w:     272px;
+  --header-h:    52px;
+  --font-mono:   'IBM Plex Mono', monospace;
+  --font-sans:   'IBM Plex Sans', sans-serif;
+  --r:           8px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ── SCROLLBAR ─────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── BUTTONS ────────────────────────────── */
+.btn {
+  padding: 6px 14px;
+  border-radius: var(--r);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--amber);
+  color: #0c0e14;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #fbbf24;
+  box-shadow: 0 0 12px rgba(245,158,11,0.5);
+}
+.btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--red); color: var(--red); }
+.btn-stop {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red-dim);
+}
+.btn-stop:hover:not(:disabled) { background: var(--red-dim); border-color: var(--red); }
+.btn-stop:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-view {
+  color: var(--teal);
+  border: 1px solid var(--teal-dim);
+  font-size: 10px;
+}
+.btn-view.active { background: var(--teal-dim); border-color: var(--teal); }
+.btn-view:hover { border-color: var(--teal); }
+
+/* ── SECTION LABELS & DIVIDERS ──────────── */
+.sec-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 4px 2px 2px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+/* ── REDUCED MOTION ──────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

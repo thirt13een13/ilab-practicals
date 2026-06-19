@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iLab Physics — Simple Pendulum | Determination of g</title>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/components-panel.css"/>
+  <link rel="stylesheet" href="css/workspace.css"/>
+  <link rel="stylesheet" href="css/readings-panel.css"/>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">⚗️</span>
+      <span class="logo-text">iLab <em>Physics</em></span>
+    </div>
+    <div class="header-title">SIMPLE PENDULUM — Determination of g</div>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <button class="btn btn-view active" id="btn-view-front" title="Front view (oscillation plane)">⬜ Front</button>
+        <button class="btn btn-view" id="btn-view-3d" title="3D view — drag to orbit">⬡ 3D</button>
+      </div>
+      <button class="btn btn-ghost" id="btn-reset">↺ Reset Lab</button>
+      <button class="btn btn-stop" id="btn-stop-bob" disabled title="Stop pendulum and return to initial angle">⏹ Stop &amp; Reset Bob</button>
+      <button class="btn btn-primary" id="btn-release" disabled>⟳ Release Bob</button>
+    </div>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <!-- ── LEFT PANEL ──────────────────────── -->
+  <aside class="left-panel">
+    <div class="panel-header">🔧 Apparatus — drag to workspace</div>
+    <div class="panel-scroll">
+
+      <!-- Draggable components -->
+      <div class="sec-label">Components</div>
+
+      <div class="comp-card" draggable="true" id="card-stand" data-type="stand">
+        <div class="comp-icon">🧪</div>
+        <div class="comp-info">
+          <div class="comp-name">Retort Stand</div>
+          <div class="comp-desc">Base + vertical rod · 60–100 cm</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-clamp" data-type="clamp">
+        <div class="comp-icon">🗜️</div>
+        <div class="comp-info">
+          <div class="comp-name">4-Prong Clamp + Boss-head</div>
+          <div class="comp-desc">30 cm horizontal arm · screw-adjustable</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-string" data-type="string">
+        <div class="comp-icon">🧵</div>
+        <div class="comp-info">
+          <div class="comp-name">Inextensible String</div>
+          <div class="comp-desc">Length 20–120 cm · with hook ends</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-bob" data-type="bob">
+        <div class="comp-icon">🔵</div>
+        <div class="comp-info">
+          <div class="comp-name">Pendulum Bob</div>
+          <div class="comp-desc">Steel sphere · 50–100 g · with hook</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-stopwatch" data-type="stopwatch">
+        <div class="comp-icon">⏱️</div>
+        <div class="comp-info">
+          <div class="comp-name">Stopwatch</div>
+          <div class="comp-desc">Manual start/stop · 0.001 s resolution</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Physics parameters -->
+      <div class="sec-label">Physics Parameters</div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">📏 Geometry</div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Stand height</span>
+            <span class="ctrl-val" id="val-height">80 cm</span>
+          </div>
+          <input type="range" id="sl-height" min="60" max="100" step="1" value="80" disabled/>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Clamp position (from rod)</span>
+            <span class="ctrl-val" id="val-clamp-pos">15 cm</span>
+          </div>
+          <input type="range" id="sl-clamp-pos" min="0" max="28" step="1" value="15" disabled/>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">String length L</span>
+            <span class="ctrl-val" id="val-length">60 cm</span>
+          </div>
+          <input type="range" id="sl-length" min="20" max="120" step="1" value="60" disabled/>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Bob mass m</span>
+            <span class="ctrl-val" id="val-mass">75 g</span>
+          </div>
+          <input type="range" id="sl-mass" min="50" max="100" step="5" value="75" disabled/>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Release angle θ</span>
+            <span class="ctrl-val" id="val-angle">10°</span>
+          </div>
+          <input type="range" id="sl-angle" min="3" max="20" step="1" value="10" disabled/>
+        </div>
+
+      </div><!-- /ctrl-group geometry -->
+
+      <!-- Environmental factors -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">🌍 Environment</div>
+
+        <div class="ctrl-row">
+          <span class="ctrl-label">Air Resistance</span>
+          <div class="seg-ctrl" id="seg-air">
+            <button class="seg-btn active" data-val="0">None</button>
+            <button class="seg-btn" data-val="1">Low</button>
+            <button class="seg-btn" data-val="2">Med</button>
+            <button class="seg-btn" data-val="3">High</button>
+          </div>
+        </div>
+
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Wind speed</span>
+            <span class="ctrl-val" id="val-wind">0.0 m/s</span>
+          </div>
+          <input type="range" id="sl-wind" min="0" max="0.4" step="0.05" value="0"/>
+        </div>
+
+        <div class="ctrl-row">
+          <span class="ctrl-label">Pivot Friction</span>
+          <div class="seg-ctrl" id="seg-friction">
+            <button class="seg-btn active" data-val="0">None</button>
+            <button class="seg-btn" data-val="1">Low</button>
+            <button class="seg-btn" data-val="2">Med</button>
+            <button class="seg-btn" data-val="3">High</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-main">T = 2π √(L/g)</div>
+        <div class="formula-sub">g = 4π²L / T²</div>
+      </div>
+
+    </div><!-- /panel-scroll -->
+  </aside><!-- /left-panel -->
+
+  <!-- ── CANVAS WORKSPACE ─────────────────── -->
+  <div class="workspace-wrap" id="workspace">
+    <canvas id="lab-canvas"></canvas>
+    <canvas id="lab-canvas-3d" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%;"></canvas>
+
+    <!-- Overlays (pointer-events: none by default) -->
+    <div class="canvas-overlay" id="overlay-status" style="pointer-events:none">
+      🔧 Drag apparatus onto the table to assemble the pendulum
+    </div>
+    <div class="canvas-overlay" id="wind-indicator" style="display:none; pointer-events:none">
+      <div style="font-size:9px;letter-spacing:1px;color:var(--text-muted);margin-bottom:2px">WIND</div>
+      <div class="wind-val" id="wind-val-display">0.00</div>
+      <div style="font-size:9px;color:var(--text-dim)">m/s →</div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ──────────────────────── -->
+  <aside class="right-panel">
+    <div class="panel-header">📡 Readings &amp; Results</div>
+    <div class="panel-scroll">
+
+      <!-- Assembly status -->
+      <div class="sec-label">Assembly</div>
+      <div class="assembly-bar">
+        <div class="asm-dot" id="asm-stand"><span class="asm-dot-icon">🧪</span> Stand</div>
+        <div class="asm-dot" id="asm-clamp"><span class="asm-dot-icon">🗜️</span> Clamp</div>
+        <div class="asm-dot" id="asm-string"><span class="asm-dot-icon">🧵</span> String</div>
+        <div class="asm-dot" id="asm-bob"><span class="asm-dot-icon">🔵</span> Bob</div>
+        <div class="asm-dot" id="asm-stopwatch"><span class="asm-dot-icon">⏱️</span> Watch</div>
+      </div>
+
+      <!-- Manual Stopwatch -->
+      <div class="sec-label" style="margin-top:4px">⏱️ Stopwatch</div>
+      <div class="stopwatch-box" id="stopwatch-apparatus" style="opacity:0.4;pointer-events:none">
+        <div class="sw-label">ELAPSED TIME</div>
+        <div class="sw-time" id="sw-time">0.000 s</div>
+        <div class="sw-sub">
+          <div class="sw-state" id="sw-state">Drag stopwatch to use</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;justify-content:center">
+          <button class="btn btn-primary" id="btn-sw-startstop" disabled style="min-width:70px">▶ Start</button>
+          <button class="btn btn-ghost" id="btn-sw-reset" disabled>↺</button>
+        </div>
+      </div>
+
+      <!-- Oscillation count + compute g -->
+      <div class="sec-label" style="margin-top:4px">Compute g</div>
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">📐 Enter your counts</div>
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <label class="ctrl-label" for="inp-n">Oscillations counted (n)</label>
+          </div>
+          <input type="number" id="inp-n" min="1" max="100" value="10"
+            style="width:100%;background:#0c0e14;border:1px solid #2e3650;border-radius:5px;
+                   color:#f59e0b;font-family:'IBM Plex Mono',monospace;font-size:13px;
+                   padding:5px 8px;outline:none;"/>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <label class="ctrl-label" for="inp-trials">Number of trials</label>
+          </div>
+          <input type="number" id="inp-trials" min="1" max="10" value="3"
+            style="width:100%;background:#0c0e14;border:1px solid #2e3650;border-radius:5px;
+                   color:#f59e0b;font-family:'IBM Plex Mono',monospace;font-size:13px;
+                   padding:5px 8px;outline:none;"/>
+        </div>
+        <button class="btn btn-primary" id="btn-record-trial" disabled
+                style="width:100%;margin-top:2px">📋 Record this Trial</button>
+      </div>
+
+      <!-- Live meters -->
+      <div class="sec-label" style="margin-top:4px">Live Readings</div>
+      <div class="meter-card">
+        <div class="m-label">String Length L</div>
+        <div class="m-value" id="res-L">— cm</div>
+        <div class="m-bar"><div class="m-fill fill-amber" id="bar-L"></div></div>
+      </div>
+      <div class="meter-card">
+        <div class="m-label">Period T</div>
+        <div class="m-value" id="res-T">— s</div>
+        <div class="m-bar"><div class="m-fill fill-teal" id="bar-T"></div></div>
+      </div>
+      <div class="meter-card accent">
+        <div class="m-label">Calculated g</div>
+        <div class="m-value large" id="res-g">— m/s²</div>
+        <div class="m-bar"><div class="m-fill fill-green" id="bar-g"></div></div>
+      </div>
+      <div class="meter-card">
+        <div class="m-label">% Error from 9.81 m/s²</div>
+        <div class="m-value" id="res-err">— %</div>
+        <div class="m-bar"><div class="m-fill fill-red" id="bar-err"></div></div>
+      </div>
+      <div class="meter-card">
+        <div class="m-label">Amplitude (damping)</div>
+        <div class="m-value" id="res-amp">— °</div>
+        <div class="m-bar"><div class="m-fill fill-amber" id="bar-amp"></div></div>
+      </div>
+
+      <!-- Trial table -->
+      <div class="sec-label" style="margin-top:4px">Trial Data</div>
+      <div class="trial-wrap">
+        <table class="trial-table">
+          <thead>
+            <tr>
+              <th>#</th><th>L (cm)</th><th>n</th><th>t (s)</th><th>T (s)</th><th>g (m/s²)</th>
+            </tr>
+          </thead>
+          <tbody id="trial-tbody">
+            <tr><td colspan="6" class="empty-row">No trials yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Aggregates -->
+      <div class="prop-row"><span class="prop-k">Mean T</span><span class="prop-v" id="mean-T">—</span></div>
+      <div class="prop-row"><span class="prop-k">Mean g</span><span class="prop-v" id="mean-g">—</span></div>
+      <div class="prop-row"><span class="prop-k">Std Dev g</span><span class="prop-v" id="std-g">—</span></div>
+
+      <div class="divider"></div>
+      <div class="status-msg" id="exp-status">
+        Drag all four components onto the lab bench to begin.
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /app-body -->
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

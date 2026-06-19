@@ -77,7 +77,7 @@ function App() {
         >
           <Route index element={<DashboardHome />} />
           <Route path="level/:levelSlug" element={<SubjectsPage />} />
-          <Route path="experiments/:subjectSlug" element={<ExperimentsPage />} />
+          <Route path="experiments/:levelSlug/:subjectSlug" element={<ExperimentsPage />} />
           <Route path="experiment/:experimentSlug" element={<ExperimentLauncher />} />
         </Route>
         
