@@ -1,3 +1,6 @@
 [submodule "experiments/o-level/physics/experiments/o-level/physics/CURRENT-ELECTRICITY"]
 	path = experiments/o-level/physics/experiments/o-level/physics/CURRENT-ELECTRICITY
 	url = https://github.com/tindell830-star/CURRENT-ELECTRICITY
+[submodule "experiments/o-level/physics/CURRENT-ELECTRICITY"]
+	path = experiments/o-level/physics/CURRENT-ELECTRICITY
+	url = https://github.com/tindell830-star/CURRENT-ELECTRICITY
