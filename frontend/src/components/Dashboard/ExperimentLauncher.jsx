@@ -47,6 +47,15 @@ export default function ExperimentLauncher() {
       subject: 'Chemistry',
       level: 'o-level',
     },
+    'current-electricity': {
+      title: 'Current Electricity',
+      slug: 'current-electricity',
+      description: 'Investigate Ohm\'s Law, resistance, series/parallel circuits, EMF, and more using a virtual circuit board',
+      docker_image: 'current-electricity',
+      port: 3004,
+      subject: 'Physics',
+      level: 'o-level',
+    },
   }
 
   useEffect(() => {

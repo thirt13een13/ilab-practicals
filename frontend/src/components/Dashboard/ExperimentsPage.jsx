@@ -57,7 +57,7 @@ const mockExperiments = {
     { id: 1, title: 'Seed Germination', slug: 'seed-germination', description: 'Investigate the conditions required for seed germination and observe early growth stages', duration: '25 min' },
   ],
   'o-level-physics': [
-    { id: 2, title: "Ohm's Law", slug: 'ohms-law', description: 'Verify the relationship between voltage, current, and resistance using a virtual circuit board', duration: '20 min' },
+    { id: 2, title: 'Current Electricity', slug: 'current-electricity', description: 'Investigate Ohm\'s Law, resistance, series/parallel circuits, EMF, and more using a virtual circuit board', duration: '20 min' },
     { id: 3, title: 'Pendulum Bob', slug: 'pendulum', description: 'Study simple harmonic motion and determine the acceleration due to gravity using a pendulum', duration: '25 min' },
     { id: 4, title: 'Focal Length', slug: 'focal-length', description: 'Determine the focal length of a converging lens using the lens equation and ray diagrams', duration: '20 min' },
   ],
