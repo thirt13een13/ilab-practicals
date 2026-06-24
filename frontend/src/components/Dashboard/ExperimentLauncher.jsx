@@ -20,6 +20,33 @@ export default function ExperimentLauncher() {
       subject: 'Physics',
       level: 'o-level',
     },
+    'focal-length': {
+      title: 'Focal Length',
+      slug: 'focal-length',
+      description: 'Determine the focal length of a converging lens using the lens equation and ray diagrams',
+      docker_image: 'focal-length',
+      port: 3002,
+      subject: 'Physics',
+      level: 'o-level',
+    },
+    'pendulum-bob': {
+      title: 'Pendulum Bob',
+      slug: 'pendulum-bob',
+      description: 'Investigate the relationship between pendulum length and period to precisely determine g',
+      docker_image: 'ilab-physics-pendulum',
+      port: 3001,
+      subject: 'Physics',
+      level: 'a-level',
+    },
+    'acid-base-titration': {
+      title: 'Acid-Base Titration',
+      slug: 'acid-base-titration',
+      description: 'Determine the concentration of an unknown solution through careful titration',
+      docker_image: 'acid-base-titration',
+      port: 3003,
+      subject: 'Chemistry',
+      level: 'o-level',
+    },
   }
 
   useEffect(() => {

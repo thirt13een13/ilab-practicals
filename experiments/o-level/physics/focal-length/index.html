@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iLab Physics — Converging Lens | Determination of Focal Length</title>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/workspace.css"/>
+  <link rel="stylesheet" href="css/readings.css"/>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🔬</span>
+      <span class="logo-text">iLab <em>Physics</em></span>
+    </div>
+    <div class="header-title">CONVERGING LENS — Determination of Focal Length</div>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <button class="btn btn-view active" id="btn-view-front">⬜ Front</button>
+        <button class="btn btn-view"        id="btn-view-side" >◧ Side</button>
+        <button class="btn btn-view"        id="btn-view-3d"   >◈ 3D</button>
+      </div>
+      <button class="btn btn-rays active" id="btn-toggle-rays" title="Show/hide principal light rays">☀ Rays</button>
+      <button class="btn btn-primary" id="btn-record" disabled>📋 Record Trial</button>
+      <button class="btn btn-ghost"   id="btn-reset"          >↺ Reset Lab</button>
+    </div>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <aside class="left-panel">
+    <div class="panel-header">🔧 Apparatus — drag to workspace</div>
+    <div class="panel-scroll">
+
+      <div class="sec-label">Optical Components</div>
+
+      <div class="comp-card" draggable="true" id="card-metrerule" data-type="metrerule">
+        <div class="comp-icon">📏</div>
+        <div class="comp-info">
+          <div class="comp-name">Metre Rule</div>
+          <div class="comp-desc">1 m optical bench · cm graduations</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-object" data-type="object">
+        <div class="comp-icon">✛</div>
+        <div class="comp-info">
+          <div class="comp-name">Illuminated Object</div>
+          <div class="comp-desc">Cross-wire board · fixed at 0 cm</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-holder" data-type="holder">
+        <div class="comp-icon">🔩</div>
+        <div class="comp-info">
+          <div class="comp-name">Lens Holder</div>
+          <div class="comp-desc">Optical rider · fits on metre rule</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-lens" data-type="lens">
+        <div class="comp-icon">🔭</div>
+        <div class="comp-info">
+          <div class="comp-name">Converging Lens</div>
+          <div class="comp-desc">Biconvex · focal length ~15 cm</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-screen" data-type="screen">
+        <div class="comp-icon">🖵</div>
+        <div class="comp-info">
+          <div class="comp-name">White Screen</div>
+          <div class="comp-desc">Movable · same size as object board</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sec-label">Light Source Circuit</div>
+
+      <div class="comp-card" draggable="true" id="card-battery" data-type="battery">
+        <div class="comp-icon">🔋</div>
+        <div class="comp-info">
+          <div class="comp-name">Battery (3 V)</div>
+          <div class="comp-desc">2× AA · drag to circuit board</div>
+        </div>
+      </div>
+
+      <div class="comp-card" draggable="true" id="card-bulb" data-type="bulb">
+        <div class="comp-icon">💡</div>
+        <div class="comp-info">
+          <div class="comp-name">Light Bulb</div>
+          <div class="comp-desc">Small incandescent · illuminates object</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- CIRCUIT BOARD -->
+      <div class="circuit-section">
+        <div class="circuit-title">⚡ Circuit Board — connect to power bulb</div>
+        <div class="circuit-canvas-wrap" id="circuit-wrap">
+          <canvas id="circuit-canvas" width="248" height="140"></canvas>
+        </div>
+        <div class="circuit-hint" id="circuit-hint">
+          Drop battery &amp; bulb above, then click terminals to draw wires.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- OBJECT DISTANCE CONTROL -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">📐 Lens Position</div>
+        <div class="ctrl-row">
+          <div class="ctrl-label-row">
+            <span class="ctrl-label">Object distance u</span>
+            <span class="ctrl-val" id="val-u">20 cm</span>
+          </div>
+          <input type="range" id="sl-u" min="16" max="50" step="1" value="20" disabled/>
+        </div>
+        <div class="ctrl-note">Read directly off the metre rule</div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-main">1/f = 1/v + 1/u</div>
+        <div class="formula-sub">
+          u = object distance (cm)<br>
+          v = image distance (cm)<br>
+          f = focal length (cm)
+        </div>
+      </div>
+
+    </div><!-- /panel-scroll -->
+  </aside>
+
+  <!-- ══ WORKSPACE ══ -->
+  <div class="workspace-wrap" id="workspace">
+    <canvas id="lab-canvas"></canvas>
+    <canvas id="canvas-3d"></canvas>
+
+    <div class="canvas-overlay" id="overlay-status">
+      🔧 Drag apparatus onto the table to set up the optical bench
+    </div>
+
+    <div id="screen-ctrl">
+      <div class="sc-heading">SCREEN POSITION</div>
+      <div class="sc-row">
+        <label>v =</label>
+        <input type="range" id="sl-screen-v" min="1" max="100" step="0.5" value="40"/>
+        <span id="sc-val">40.0 cm</span>
+      </div>
+      <div class="sc-note">Slide until the image on the screen looks sharp</div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <aside class="right-panel">
+    <div class="panel-header">📡 Readings &amp; Results</div>
+    <div class="panel-scroll">
+
+      <div class="sec-label">Assembly Status</div>
+      <div class="assembly-bar">
+        <div class="asm-dot" id="asm-metrerule"><span class="asm-dot-icon">📏</span>Bench</div>
+        <div class="asm-dot" id="asm-object"   ><span class="asm-dot-icon">✛</span>Object</div>
+        <div class="asm-dot" id="asm-holder"   ><span class="asm-dot-icon">🔩</span>Holder</div>
+        <div class="asm-dot" id="asm-lens"     ><span class="asm-dot-icon">🔭</span>Lens</div>
+        <div class="asm-dot" id="asm-screen"   ><span class="asm-dot-icon">🖵</span>Screen</div>
+        <div class="asm-dot" id="asm-circuit"  ><span class="asm-dot-icon">⚡</span>Light</div>
+      </div>
+
+      <div class="sec-label" style="margin-top:4px">Live Readings</div>
+
+      <div class="meter-card">
+        <div class="m-label">Object Distance  |u|</div>
+        <div class="m-value" id="res-u">— cm</div>
+        <div class="m-bar"><div class="m-fill fill-amber"  id="bar-u"></div></div>
+      </div>
+      <div class="meter-card">
+        <div class="m-label">Image Distance  v</div>
+        <div class="m-value" id="res-v">— cm</div>
+        <div class="m-bar"><div class="m-fill fill-teal"   id="bar-v"></div></div>
+      </div>
+      <div class="meter-card accent">
+        <div class="m-label">Focal Length  f</div>
+        <div class="m-value large" id="res-f">— cm</div>
+        <div class="m-bar"><div class="m-fill fill-green"  id="bar-f"></div></div>
+      </div>
+
+      <div class="sec-label" style="margin-top:4px">Trial Data</div>
+      <div class="trial-wrap">
+        <table class="trial-table">
+          <thead>
+            <tr><th>#</th><th>u (cm)</th><th>v (cm)</th><th>f (cm)</th></tr>
+          </thead>
+          <tbody id="trial-tbody">
+            <tr><td colspan="4" class="empty-row">No trials yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prop-row"><span class="prop-k">Mean f</span>   <span class="prop-v" id="mean-f">—</span></div>
+      <div class="prop-row"><span class="prop-k">Std Dev f</span><span class="prop-v" id="std-f">—</span></div>
+      <div class="prop-row"><span class="prop-k">% Error (f=15 cm)</span><span class="prop-v" id="err-f">—</span></div>
+
+      <div class="divider"></div>
+      <div class="status-msg" id="exp-status">Drag all components onto the lab bench to begin.</div>
+
+    </div><!-- /panel-scroll -->
+  </aside>
+
+</div><!-- /app-body -->
+
+<!-- classic scripts: load in dependency order, define global Lab.* -->
+<script src="js/state.js"></script>
+<script src="js/components/2d/table.js"></script>
+<script src="js/components/2d/metrerule.js"></script>
+<script src="js/components/2d/object.js"></script>
+<script src="js/components/2d/holder.js"></script>
+<script src="js/components/2d/lens.js"></script>
+<script src="js/components/2d/screen.js"></script>
+<script src="js/components/2d/rays.js"></script>
+<script src="js/components/2d/sideview.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/components.js"></script>
+<script src="js/readings.js"></script>
+<script src="js/main.js"></script>
+
+<!-- Three.js scene — ES module, deferred, runs after DOM parse -->
+<script type="module" src="js/scene3d.js"></script>
+</body>
+</html>
