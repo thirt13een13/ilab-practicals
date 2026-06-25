@@ -3,10 +3,13 @@ import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
 import { ArrowLeft, FlaskConical, Loader2, Maximize2, Minimize2, X } from 'lucide-react'
 
+const DOCKER_MANAGER = 'http://localhost:3000'
+
 export default function ExperimentLauncher() {
   const { experimentSlug } = useParams()
   const [experiment, setExperiment] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [containerStatus, setContainerStatus] = useState('idle') // idle | starting | ready | error
   const [error, setError] = useState('')
   const [isFullscreen, setIsFullscreen] = useState(false)
 
@@ -56,6 +59,24 @@ export default function ExperimentLauncher() {
       subject: 'Physics',
       level: 'o-level',
     },
+    'water-retention': {
+      title: 'Soil Water Retention',
+      slug: 'water-retention',
+      description: 'Compare how sandy, loamy, and clay soils retain water by setting up filtration funnels and measuring drainage',
+      docker_image: 'water-retention',
+      port: 3005,
+      subject: 'Integrated Science',
+      level: 'primary',
+    },
+    'heat-conduction': {
+      title: 'Heat Conduction',
+      slug: 'heat-conduction',
+      description: 'Investigate conductors and insulators by observing how heat travels along copper, wood, and plastic rods',
+      docker_image: 'heat-conduction',
+      port: 3006,
+      subject: 'Integrated Science',
+      level: 'primary',
+    },
   }
 
   useEffect(() => {
@@ -65,34 +86,50 @@ export default function ExperimentLauncher() {
   const loadExperiment = async () => {
     setLoading(true)
     setError('')
-    
-    console.log('Loading experiment:', experimentSlug)
-    
-    // Get experiment from fallback data
-    const fallbackExperiment = allExperiments[experimentSlug]
-    
-    if (fallbackExperiment) {
-      setExperiment(fallbackExperiment)
-    } else {
-      // Try Supabase
+
+    let exp = allExperiments[experimentSlug]
+
+    if (!exp) {
       try {
         const { data } = await supabase
           .from('experiments')
           .select('*')
           .eq('slug', experimentSlug)
           .single()
-        
-        if (data) {
-          setExperiment(data)
-        } else {
-          setError('Experiment not found')
-        }
-      } catch (err) {
-        setError('Failed to load experiment')
-      }
+        if (data) exp = data
+      } catch (_) {}
     }
-    
+
+    if (!exp) {
+      setError('Experiment not found')
+      setLoading(false)
+      return
+    }
+
+    setExperiment(exp)
     setLoading(false)
+    await startContainer(exp)
+  }
+
+  const startContainer = async (exp) => {
+    setContainerStatus('starting')
+    try {
+      const res = await fetch(`${DOCKER_MANAGER}/api/start-experiment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: exp.docker_image, port: exp.port }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setContainerStatus('ready')
+      } else {
+        setError(data.error || 'Failed to start experiment container')
+        setContainerStatus('error')
+      }
+    } catch (err) {
+      setError('Could not reach the Docker Manager. Make sure it is running on port 3000.')
+      setContainerStatus('error')
+    }
   }
 
   const closeExperiment = () => {
@@ -111,24 +148,30 @@ export default function ExperimentLauncher() {
       'Chemistry': 'chemistry',
       'Biology': 'biology',
       'Integrated Science': 'integrated-science',
+      'integrated-science': 'integrated-science',
     }
     const subject = subjectSlugMap[experiment.subject] || 'physics'
     const level = experiment.level || 'o-level'
     return `/dashboard/experiments/${level}/${subject}`
   }
 
-  if (loading) {
+  if (loading || containerStatus === 'starting') {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Loading experiment...</p>
+          <p className="mt-4 text-gray-700 font-medium">
+            {loading ? 'Loading experiment...' : `Starting ${experiment?.title}...`}
+          </p>
+          {containerStatus === 'starting' && (
+            <p className="mt-1 text-sm text-gray-400">Launching Docker container, please wait</p>
+          )}
         </div>
       </div>
     )
   }
 
-  if (!experiment) {
+  if (!experiment || containerStatus === 'error') {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">

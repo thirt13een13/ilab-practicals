@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>iLab Physics — Heat Conduction | P6 Uganda Science</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🔬</span>
+      <span class="logo-text">iLab <em>Physics</em></span>
+    </div>
+    <div class="header-title">HEAT CONDUCTION — Conductors &amp; Insulators · P6 Uganda Science</div>
+    <div class="header-actions">
+      <button class="btn btn-fire" id="btn-light" disabled>🔥 Light Candle</button>
+      <button class="btn btn-ghost" id="btn-reset">↺ Reset Lab</button>
+    </div>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <aside class="left-panel">
+    <div class="panel-header">🔧 Apparatus — drag onto bench</div>
+    <div class="panel-scroll">
+
+      <div class="sec-label">Bench Equipment</div>
+      <div class="comp-card" draggable="true" id="card-table" data-type="table">
+        <div class="comp-icon">🪵</div>
+        <div class="comp-info">
+          <div class="comp-name">Lab Table</div>
+          <div class="comp-desc">Heavy Colombo bench · place first</div>
+        </div>
+      </div>
+      <div class="comp-card" draggable="true" id="card-stand" data-type="stand">
+        <div class="comp-icon">⚙️</div>
+        <div class="comp-info">
+          <div class="comp-name">Retort Stand</div>
+          <div class="comp-desc">Iron stand · holds rods horizontally</div>
+        </div>
+      </div>
+      <div class="comp-card" draggable="true" id="card-candle" data-type="candle">
+        <div class="comp-icon">🕯️</div>
+        <div class="comp-info">
+          <div class="comp-name">Candle</div>
+          <div class="comp-desc">Heat source · brass saucer holder</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sec-label">Conducting Rods</div>
+      <div class="comp-card" draggable="true" id="card-copper" data-type="copper">
+        <div class="comp-icon">🟠</div>
+        <div class="comp-info">
+          <div class="comp-name">Copper Rod</div>
+          <div class="comp-desc">Metal · excellent conductor</div>
+        </div>
+      </div>
+      <div class="comp-card" draggable="true" id="card-wood" data-type="wood">
+        <div class="comp-icon">🟤</div>
+        <div class="comp-info">
+          <div class="comp-name">Wooden Rod</div>
+          <div class="comp-desc">Non-metal · poor conductor</div>
+        </div>
+      </div>
+      <div class="comp-card" draggable="true" id="card-plastic" data-type="plastic">
+        <div class="comp-icon">🔵</div>
+        <div class="comp-info">
+          <div class="comp-name">Plastic Rod</div>
+          <div class="comp-desc">Insulator · very poor conductor</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sec-label">Consumables</div>
+      <div class="comp-card" draggable="true" id="card-wax" data-type="wax">
+        <div class="comp-icon">⚪</div>
+        <div class="comp-info">
+          <div class="comp-name">Wax Beads ×15</div>
+          <div class="comp-desc">5 per rod · melt and fall when hot</div>
+        </div>
+      </div>
+      <div class="comp-card" draggable="true" id="card-matchbox" data-type="matchbox">
+        <div class="comp-icon">🔥</div>
+        <div class="comp-info">
+          <div class="comp-name">Matchbox</div>
+          <div class="comp-desc">Strike a match to light the candle</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="formula-box">
+        <div class="formula-main">Q = mcΔT</div>
+        <div class="formula-sub">
+          Q = heat transferred (J)<br>
+          m = mass (kg)<br>
+          c = specific heat capacity<br>
+          ΔT = temperature rise (K)
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div class="workspace-wrap" id="workspace">
+    <div id="scene-mount"></div>
+    <canvas id="fx-canvas"></canvas>
+
+    <div id="overlay-status">🔧 Drag apparatus onto the bench to begin</div>
+
+    <div id="timer-display">
+      <div class="td-label">Elapsed</div>
+      <div class="td-val"><span id="timer-val">0</span>s</div>
+    </div>
+
+    <div id="heat-overlay">
+      <div class="ho-title">Heat Front Progress</div>
+      <div class="hf-row">
+        <span class="hf-label hf-copper-t">Cu</span>
+        <div class="hf-bar-wrap"><div class="hf-bar hf-copper" id="hf-copper"></div></div>
+        <span class="hf-pct hf-copper-t" id="hfp-copper">0%</span>
+      </div>
+      <div class="hf-row">
+        <span class="hf-label hf-wood-t">Wd</span>
+        <div class="hf-bar-wrap"><div class="hf-bar hf-wood" id="hf-wood"></div></div>
+        <span class="hf-pct hf-wood-t" id="hfp-wood">0%</span>
+      </div>
+      <div class="hf-row">
+        <span class="hf-label hf-plastic-t">Pl</span>
+        <div class="hf-bar-wrap"><div class="hf-bar hf-plastic" id="hf-plastic"></div></div>
+        <span class="hf-pct hf-plastic-t" id="hfp-plastic">0%</span>
+      </div>
+    </div>
+
+    <div class="modal-bg" id="match-modal">
+      <div class="modal-card">
+        <div class="modal-icon">🔥</div>
+        <div class="modal-title">Strike the Match</div>
+        <div class="modal-sub">Click and drag fast across the strike surface below</div>
+        <div class="strike-zone" id="strike-zone">
+          <div class="strike-label">▶▶ DRAG FAST ACROSS HERE ◀◀</div>
+          <div class="strike-bar" id="strike-bar"></div>
+        </div>
+        <div class="modal-tip" id="strike-tip">Drag your mouse quickly across the strip</div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="right-panel">
+    <div class="panel-header">📡 Readings &amp; Results</div>
+    <div class="panel-scroll">
+
+      <div class="sec-label">Assembly Status</div>
+      <div class="assembly-bar">
+        <div class="asm-dot" id="asm-table">🪵 Table</div>
+        <div class="asm-dot" id="asm-stand">⚙️ Stand</div>
+        <div class="asm-dot" id="asm-candle">🕯️ Candle</div>
+        <div class="asm-dot" id="asm-copper">🟠 Cu</div>
+        <div class="asm-dot" id="asm-wood">🟤 Wd</div>
+        <div class="asm-dot" id="asm-plastic">🔵 Pl</div>
+        <div class="asm-dot" id="asm-wax">⚪ Wax</div>
+        <div class="asm-dot" id="asm-matchbox">🔥 Match</div>
+      </div>
+
+      <div class="sec-label" style="margin-top:4px">Procedure</div>
+      <ul class="step-list">
+        <li class="step-item active" data-step="table">Place the <b>Lab Table</b></li>
+        <li class="step-item" data-step="stand">Mount the <b>Retort Stand</b></li>
+        <li class="step-item" data-step="candle">Position the <b>Candle</b></li>
+        <li class="step-item" data-step="copper">Clamp <b>Copper Rod</b></li>
+        <li class="step-item" data-step="wood">Clamp <b>Wooden Rod</b></li>
+        <li class="step-item" data-step="plastic">Clamp <b>Plastic Rod</b></li>
+        <li class="step-item" data-step="wax">Attach <b>Wax Beads</b></li>
+        <li class="step-item" data-step="matchbox">Place <b>Matchbox</b></li>
+        <li class="step-item" data-step="light">Strike match &amp; <b>light candle</b></li>
+        <li class="step-item" data-step="observe"><b>Observe</b> bead fall order</li>
+      </ul>
+
+      <div class="sec-label" id="lbl-legend" style="display:none;margin-top:4px">Conductivity Ranking</div>
+      <div id="legend-box" style="display:none">
+        <div class="legend-row">
+          <div class="leg-dot" style="background:var(--copper)"></div>
+          <span><b style="color:var(--copper)">Copper</b> — highest (metal)</span>
+        </div>
+        <div class="legend-row">
+          <div class="leg-dot" style="background:var(--wood-col)"></div>
+          <span><b style="color:var(--wood-col)">Wood</b> — medium (non-metal)</span>
+        </div>
+        <div class="legend-row">
+          <div class="leg-dot" style="background:var(--plastic-col)"></div>
+          <span><b style="color:var(--plastic-col)">Plastic</b> — lowest (insulator)</span>
+        </div>
+      </div>
+
+      <div class="sec-label" id="lbl-tracker" style="display:none;margin-top:4px">Wax Beads Fallen</div>
+      <div id="tracker-box" style="display:none">
+        <div class="bead-track-row">
+          <div class="bt-label bt-copper">Copper</div>
+          <div class="bt-dots" id="btd-copper"></div>
+        </div>
+        <div class="bead-track-row">
+          <div class="bt-label bt-wood">Wood</div>
+          <div class="bt-dots" id="btd-wood"></div>
+        </div>
+        <div class="bead-track-row">
+          <div class="bt-label bt-plastic">Plastic</div>
+          <div class="bt-dots" id="btd-plastic"></div>
+        </div>
+      </div>
+
+      <div class="meter-card accent" id="timer-card" style="display:none;margin-top:4px">
+        <div class="m-label">Elapsed Time</div>
+        <div class="m-value large" id="meter-time">0 s</div>
+        <div class="m-bar"><div class="m-fill fill-amber" id="bar-time"></div></div>
+      </div>
+
+      <div id="results-section" style="display:none">
+        <div class="sec-label" style="margin-top:4px">Experiment Results</div>
+        <div id="results-content" style="display:flex;flex-direction:column;gap:6px"></div>
+        <div class="conclusion-box" id="conclusion-box" style="display:none;margin-top:6px">
+          <strong>Conclusion:</strong><br>
+          Metals like copper are <em>good conductors</em> of heat — beads fell fastest.
+          Wood and plastic are <em>poor conductors</em> (insulators). This is why
+          saucepan handles in Uganda are made of wood or plastic — to protect your
+          hand from heat.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="status-msg" id="exp-status">
+        Drag all components onto the lab bench to begin the experiment.
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

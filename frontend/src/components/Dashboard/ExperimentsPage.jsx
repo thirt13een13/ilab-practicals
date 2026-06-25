@@ -55,6 +55,8 @@ const defaultMeta = {
 const mockExperiments = {
   'primary-integrated-science': [
     { id: 1, title: 'Seed Germination', slug: 'seed-germination', description: 'Investigate the conditions required for seed germination and observe early growth stages', duration: '25 min' },
+    { id: 11, title: 'Soil Water Retention', slug: 'water-retention', description: 'Compare how sandy, loamy, and clay soils retain water by setting up filtration funnels and measuring drainage', duration: '20 min' },
+    { id: 12, title: 'Heat Conduction', slug: 'heat-conduction', description: 'Investigate conductors and insulators by observing how heat travels along copper, wood, and plastic rods', duration: '20 min' },
   ],
   'o-level-physics': [
     { id: 2, title: 'Current Electricity', slug: 'current-electricity', description: 'Investigate Ohm\'s Law, resistance, series/parallel circuits, EMF, and more using a virtual circuit board', duration: '20 min' },

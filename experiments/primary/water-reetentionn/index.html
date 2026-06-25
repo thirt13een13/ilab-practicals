@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soil Water Retention — Virtual Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4fc3f7" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+      Soil Water Retention Lab
+    </div>
+    <div class="phase-indicator">
+      <span class="phase-label">▸</span>
+      <span id="phase-text">Drag apparatus from the shelf onto the lab table</span>
+    </div>
+    <button id="reset-btn" class="btn-reset">↺ Reset</button>
+  </header>
+
+  <aside class="instructions">
+    <h3>Procedure &amp; Readings</h3>
+    <ol id="steps-list">
+      <li class="step" data-step="beaker1">Place <strong>Cylinder 1</strong> on table</li>
+      <li class="step" data-step="beaker2">Place <strong>Cylinder 2</strong> on table</li>
+      <li class="step" data-step="beaker3">Place <strong>Cylinder 3</strong> on table</li>
+      <li class="step" data-step="funnel1">Place <strong>Funnel 1</strong> on Cylinder 1</li>
+      <li class="step" data-step="funnel2">Place <strong>Funnel 2</strong> on Cylinder 2</li>
+      <li class="step" data-step="funnel3">Place <strong>Funnel 3</strong> on Cylinder 3</li>
+      <li class="step" data-step="filter1">Line Funnel 1 with <strong>Filter Paper</strong></li>
+      <li class="step" data-step="filter2">Line Funnel 2 with <strong>Filter Paper</strong></li>
+      <li class="step" data-step="filter3">Line Funnel 3 with <strong>Filter Paper</strong></li>
+      <li class="step" data-step="sandy">Add <strong>Sandy Soil</strong> (50g) → Funnel 1</li>
+      <li class="step" data-step="loamy">Add <strong>Loamy Soil</strong> (50g) → Funnel 2</li>
+      <li class="step" data-step="clay">Add <strong>Clay Soil</strong> (50g) → Funnel 3</li>
+      <li class="step" data-step="pour">Drag a <strong>Cylinder</strong> from the shelf onto a funnel setup to pour</li>
+    </ol>
+
+    <div id="volume-display" class="vol-display hidden">
+      <div class="vol-title">💧 Pouring into <span id="vol-slot-name">—</span></div>
+      <div class="vol-bar-wrap"><div id="vol-bar" class="vol-bar"></div></div>
+      <div class="vol-numbers"><span id="vol-current">0</span>ml / 100ml</div>
+      <button id="stop-pour-btn" class="btn-stop">■ Stop Pouring</button>
+    </div>
+
+    <div id="results-box" class="results-box hidden">
+      <h4>📊 Results</h4>
+      <div id="results-content"></div>
+    </div>
+  </aside>
+
+  <!-- APPARATUS SHELF (left panel) -->
+  <section class="tray">
+    <div class="tray-label">Apparatus — drag to workspace</div>
+    <div class="tray-items" id="tray-items"></div>
+  </section>
+
+  <!-- WORKSPACE -->
+  <main class="workspace" id="workspace">
+    <div class="workspace-hint" id="workspace-hint">Drop apparatus here to build your setup</div>
+    <div id="scene-container"></div>
+    <canvas id="pour-canvas"></canvas>
+    <div class="workspace-controls">
+      <div id="timer-display" class="timer hidden">⏱ <span id="timer-val">0</span>s / 20s</div>
+    </div>
+  </main>
+
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -40,7 +40,7 @@ const levels = [
 
 const stats = [
   { label: 'Available Subjects', value: '7', icon: BookMarked, color: 'text-blue-600', bg: 'bg-blue-50' },
-  { label: 'Total Experiments', value: '10', icon: FlaskConical, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+  { label: 'Total Experiments', value: '12', icon: FlaskConical, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { label: 'Active Sessions', value: '0', icon: Atom, color: 'text-emerald-600', bg: 'bg-emerald-50' },
 ]
 
