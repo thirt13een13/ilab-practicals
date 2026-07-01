@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refraction of Light &mdash; Glass Block Virtual Simulation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ TOP BAR ============ -->
+  <div class="topbar">
+    <div class="brand">🔭 Refraction of Light <small>GLASS BLOCK &middot; VIRTUAL SIMULATION LAB</small></div>
+    <div class="spacer"></div>
+    <button class="tbtn" id="btnInstructions">📋 Procedure</button>
+    <button class="tbtn" id="btnTheme">🌓 Theme</button>
+    <button class="tbtn" id="btnSave">💾 Save</button>
+    <button class="tbtn" id="btnLoad">📂 Load</button>
+  </div>
+
+  <div class="main">
+
+    <!-- ============ LEFT TRAY ============ -->
+    <aside class="tray" id="tray">
+      <h2>Apparatus</h2>
+
+      <table class="apparatus-table">
+        <thead>
+          <tr><th>Item</th><th>Use</th></tr>
+        </thead>
+        <tbody>
+          <tr class="apparatus-row" draggable="true" data-type="board" title="Drag onto the bench to start the experiment">
+            <td><span class="apparatus-icon">📐</span></td>
+            <td><strong>Drawing Board</strong><div class="apparatus-desc">Base surface</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="block-a" title="Rectangular crown-glass block, n ≈ 1.52">
+            <td><span class="apparatus-icon">🧊</span></td>
+            <td><strong>Glass Block A</strong><div class="apparatus-desc">Crown glass</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="prism" title="Triangular glass prism for dispersion and refraction">
+            <td><span class="apparatus-icon">🔺</span></td>
+            <td><strong>Triangular Prism</strong><div class="apparatus-desc">Dispersion/refraction</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="raybox" title="Single-slit ray box">
+            <td><span class="apparatus-icon">🔦</span></td>
+            <td><strong>Ray Box</strong><div class="apparatus-desc">Incident ray source</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="protractor" title="Transparent protractor">
+            <td><span class="apparatus-icon">📏</span></td>
+            <td><strong>Protractor</strong><div class="apparatus-desc">Measure angles</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="setsquare" title="Set square">
+            <td><span class="apparatus-icon">▱</span></td>
+            <td><strong>Set Square</strong><div class="apparatus-desc">Draw the normal</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="ruler" title="Ruler">
+            <td><span class="apparatus-icon">📏</span></td>
+            <td><strong>Ruler</strong><div class="apparatus-desc">Measure displacement</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="pencil" title="Pencil or marker">
+            <td><span class="apparatus-icon">✎</span></td>
+            <td><strong>Pencil / Marker</strong><div class="apparatus-desc">Mark entry points</div></td>
+          </tr>
+          <tr class="apparatus-row" draggable="true" data-type="pins" title="Pins for ray tracing">
+            <td><span class="apparatus-icon">📌</span></td>
+            <td><strong>Pins</strong><div class="apparatus-desc">Pin-tracing mode</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="hint">Build order: Drawing Board → a Glass Block → Ray Box. Drag any extra tool from the table onto the workspace when you need to measure or mark the experiment.</div>
+    </aside>
+
+    <!-- ============ WORKSPACE ============ -->
+    <div class="workspace-wrap">
+      <div class="zoom-controls">
+        <button id="zoomIn">+</button>
+        <button id="zoomReset">⤾</button>
+        <button id="zoomOut">−</button>
+      </div>
+      <div class="zoom-pct" id="zoomPct">100%</div>
+      <div class="stage-viewport" id="stageViewport">
+        <div class="stage" id="stage">
+          <canvas id="rayCanvas" width="1300" height="1000"></canvas>
+          <canvas id="drawCanvas" width="1300" height="1000"></canvas>
+        </div>
+        <div class="empty-hint" id="emptyHint">🛠 This is your lab bench.<br>Drag the <b>Drawing Board</b> from the left onto the table to begin.</div>
+      </div>
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- ============ INSTRUCTIONS DRAWER ============ -->
+    <div class="instructions" id="instructions">
+      <button class="close-x" id="closeInstructions">✕</button>
+      <h2>Procedure</h2>
+      <ol>
+        <li>Place the glass block on the drawing board and trace its outline onto the paper.</li>
+        <li>Set the normal location d from the edge of the glass block before tracing the ray.</li>
+        <li>Mark a point on the incidence face and use the set square to draw the normal, perpendicular to the surface, at that point.</li>
+        <li>Position the ray box so the incident ray strikes the marked point at your chosen angle of incidence, i.</li>
+        <li>Trace the ray's path as it bends towards the normal while entering the denser glass, travels through the block, then bends away from the normal as it emerges back into air.</li>
+        <li>Use the protractor to measure the angle of refraction, r, from the normal.</li>
+        <li>Repeat for a range of angles of incidence and record each i–r pair.</li>
+        <li>Plot sin(i) against sin(r). The gradient of the best-fit line is the refractive index, n.</li>
+        <li>Switch to the triangular prism to explore dispersion and prism refraction.</li>
+      </ol>
+      <div class="formula">n₁ sin θ₁ = n₂ sin θ₂ &nbsp;|&nbsp; n = sin i / sin r &nbsp;|&nbsp; sin θc = 1/n</div>
+      <div class="formula">Lateral displacement: d = t·sin(i − r) / cos r</div>
+      <p style="font-size:12px;color:var(--text-dim);">Air is taken as n = 1.00 throughout this simulation.</p>
+    </div>
+
+    <!-- ============ RIGHT CONSOLE ============ -->
+    <aside class="console">
+
+      <section>
+        <h2>Trial Controls</h2>
+        <div class="btn-row">
+          <button class="btn primary" id="btnRecord">📍 Record Reading</button>
+          <button class="btn" id="btnTrace">✨ Trace Ray</button>
+          <button class="btn" id="btnTraceOutline">✏️ Trace Outline</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="btnNewTrial">🔄 New Trial</button>
+          <button class="btn" id="btnReset">⟲ Reset Experiment</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn warn" id="btnClearData">🗑 Clear Data</button>
+        </div>
+        <div class="unit-toggle">
+          <button data-unit="deg" class="active">Degrees</button>
+          <button data-unit="rad">Radians</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Experimenter</h2>
+        <div class="btn-row">
+          <button class="btn" id="btnExperimenter">🔒 Experimenter mode: OFF</button>
+        </div>
+        <div class="hint">Enable Experimenter mode to allow placing/removing pins.</div>
+      </section>
+
+      <section id="pinTracingSection">
+        <h2>Pin Tracing</h2>
+        <div class="hint" style="margin-bottom:8px;">1. Drag P1 &amp; P2 along the incident ray.<br>2. Click "Place P3" / "Place P4", then click on the emergent side to position each pin.<br>3. Align P3–P4 with P1–P2 through the glass, then check alignment.</div>
+        <div class="btn-row">
+          <button class="btn pin-btn" id="btnPlaceP3" disabled>📌 Place P3</button>
+          <button class="btn pin-btn" id="btnPlaceP4" disabled>📌 Place P4</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="btnClearPins" disabled>🗑 Clear P3 &amp; P4</button>
+          <button class="btn gold" id="btnCheckAlign" disabled>✓ Check Alignment</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Adjustments</h2>
+        <div class="field">
+          <label>Normal position from left edge, d <span class="val" id="lblOffset">3.0 cm</span></label>
+          <input type="range" id="sliderOffset" min="1" max="10" step="0.1" value="3">
+        </div>
+        <div class="field">
+          <label>Protractor rotation, θ<sub>p</sub> <span class="val" id="lblProtractor">0°</span></label>
+          <input type="range" id="sliderProtractor" min="-180" max="180" step="1" value="0">
+        </div>
+        <div class="field">
+          <label>Angle of incidence, i <span class="val" id="lblAngle">35.0°</span></label>
+          <input type="range" id="sliderAngle" min="0" max="89" step="0.5" value="35">
+        </div>
+        <div class="field">
+          <label>Refractive index, n (active block) <span class="val" id="lblN">1.52</span></label>
+          <input type="range" id="sliderN" min="1.10" max="2.00" step="0.01" value="1.52">
+        </div>
+        <div class="field">
+          <label><span id="lblSizeName">Block thickness, t</span> <span class="val" id="lblSize">6.0 cm</span></label>
+          <input type="range" id="sliderSize" min="2" max="12" step="0.5" value="6">
+        </div>
+        <div class="hint" style="margin-top:0;">Currently editing: <b id="activeBlockName" style="color:var(--brass-light)">Glass Block A</b></div>
+      </section>
+
+      <section>
+        <h2>Live Readout</h2>
+        <div class="graph-readout">
+          <span>i: <b id="readI">35.0°</b></span>
+          <span>r: <b id="readR">—</b></span>
+          <span id="readExtra"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Data Table</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>i</th><th>r</th><th>n (calc)</th><th>d (mm)</th></tr></thead>
+            <tbody id="dataBody"><tr><td colspan="5" class="empty-row">No readings recorded yet</td></tr></tbody>
+          </table>
+        </div>
+        <div class="btn-row" style="margin-top:8px;">
+          <button class="btn gold" id="btnExport">⬇ Export CSV</button>
+          <button class="btn" id="btnCheckK">🎓 Check my n</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>sin(i) – sin(r) Graph</h2>
+        <canvas id="graph" width="600" height="380"></canvas>
+        <div class="graph-readout">
+          <span>Best-fit gradient (n): <b id="gradK">—</b></span>
+          <span>R²: <b id="gradR2">—</b></span>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

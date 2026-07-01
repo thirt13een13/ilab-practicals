@@ -57,11 +57,13 @@ const mockExperiments = {
     { id: 1, title: 'Seed Germination', slug: 'seed-germination', description: 'Investigate the conditions required for seed germination and observe early growth stages', duration: '25 min' },
     { id: 11, title: 'Soil Water Retention', slug: 'water-retention', description: 'Compare how sandy, loamy, and clay soils retain water by setting up filtration funnels and measuring drainage', duration: '20 min' },
     { id: 12, title: 'Heat Conduction', slug: 'heat-conduction', description: 'Investigate conductors and insulators by observing how heat travels along copper, wood, and plastic rods', duration: '20 min' },
+    { id: 13, title: 'Magnets', slug: 'magnets', description: 'Explore magnetic attraction and repulsion, poles, and magnetic fields using bar magnets and everyday objects', duration: '20 min' },
   ],
   'o-level-physics': [
     { id: 2, title: 'Current Electricity', slug: 'current-electricity', description: 'Investigate Ohm\'s Law, resistance, series/parallel circuits, EMF, and more using a virtual circuit board', duration: '20 min' },
     { id: 3, title: 'Pendulum Bob', slug: 'pendulum', description: 'Study simple harmonic motion and determine the acceleration due to gravity using a pendulum', duration: '25 min' },
     { id: 4, title: 'Focal Length', slug: 'focal-length', description: 'Determine the focal length of a converging lens using the lens equation and ray diagrams', duration: '20 min' },
+    { id: 14, title: 'Magnets', slug: 'magnets-o-level', description: 'Explore magnetic attraction and repulsion, poles, and magnetic fields using bar magnets and everyday objects', duration: '20 min' },
   ],
   'o-level-chemistry': [
     { id: 5, title: 'Acid-Base Titration', slug: 'acid-base-titration', description: 'Determine the concentration of an unknown solution through careful titration', duration: '35 min' },

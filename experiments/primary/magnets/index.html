@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Properties of Magnets — Uganda Primary Science Virtual Lab</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C7 2 3 6 3 11s4 9 9 9 9-4 9-9-4-9-9-9z" fill="#2196f3" opacity=".2"/>
+      <path d="M6 8h5v8H6a4 4 0 0 1 0-8z" fill="#ef5350"/>
+      <path d="M11 8h1v8h-1z" fill="#555"/>
+      <path d="M12 8h5a4 4 0 0 1 0 8h-5V8z" fill="#2196f3"/>
+      <text x="7.5" y="14.5" font-size="5" fill="#fff" font-weight="bold">N</text>
+      <text x="14" y="14.5" font-size="5" fill="#fff" font-weight="bold">S</text>
+    </svg>
+    Properties of Magnets &nbsp;|&nbsp; P6 / P7 Integrated Science · Uganda
+  </div>
+  <div class="phase-bar"><span class="pl">▸</span><span id="phaseMsg">Select an experiment from the tabs below to begin</span></div>
+  <button class="btn-reset" id="resetBtn">↺ Reset</button>
+</header>
+
+<!-- EXPERIMENT TABS -->
+<nav class="exp-tabs" id="expTabs">
+  <button class="etab active" data-exp="attraction">🧲 Attraction &amp; Repulsion</button>
+  <button class="etab" data-exp="poles">🔴🔵 Poles &amp; Fields</button>
+  <button class="etab" data-exp="compass">🧭 Compass / Directive</button>
+</nav>
+
+<!-- BODY -->
+<div class="body-grid">
+
+  <!-- LEFT PANEL -->
+  <aside class="side-panel" id="sidePanel">
+    <div class="theory-block" id="theoryBlock">
+      <!-- filled by JS per experiment -->
+    </div>
+    <div class="proc-block">
+      <div class="block-title">Procedure</div>
+      <ul class="proc-list" id="procList"></ul>
+    </div>
+    <div class="obs-block" id="obsBlock" style="display:none">
+      <div class="block-title">Observations</div>
+      <div id="obsContent"></div>
+    </div>
+    <div class="res-block" id="resBlock" style="display:none">
+      <div class="block-title">Results &amp; Conclusion</div>
+      <div id="resContent"></div>
+    </div>
+  </aside>
+
+  <!-- SHELF -->
+  <section class="shelf" id="shelf">
+    <div class="shelf-lbl">Apparatus — drag items onto the workspace</div>
+    <div class="shelf-row" id="shelfRow"></div>
+  </section>
+
+  <!-- WORKSPACE -->
+  <main class="workspace" id="workspace">
+    <div class="ws-hint" id="wsHint">Drag apparatus from the shelf onto the workspace to begin</div>
+    <div id="sceneContainer"></div>
+    <canvas id="fxCanvas"></canvas>
+    <div class="ws-controls" id="wsControls">
+      <!-- filled by JS per experiment -->
+    </div>
+  </main>
+
+</div><!-- end body-grid -->
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js?v=20260629"></script>
+</body>
+</html>

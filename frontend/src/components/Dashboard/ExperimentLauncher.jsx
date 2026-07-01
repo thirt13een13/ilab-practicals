@@ -77,6 +77,24 @@ export default function ExperimentLauncher() {
       subject: 'Integrated Science',
       level: 'primary',
     },
+    'magnets': {
+      title: 'Magnets',
+      slug: 'magnets',
+      description: 'Explore magnetic attraction and repulsion, poles, and magnetic fields using bar magnets and everyday objects',
+      docker_image: 'magnets',
+      port: 3007,
+      subject: 'Integrated Science',
+      level: 'primary',
+    },
+    'magnets-o-level': {
+      title: 'Magnets',
+      slug: 'magnets-o-level',
+      description: 'Explore magnetic attraction and repulsion, poles, and magnetic fields using bar magnets and everyday objects',
+      docker_image: 'magnets',
+      port: 3007,
+      subject: 'Physics',
+      level: 'o-level',
+    },
   }
 
   useEffect(() => {
